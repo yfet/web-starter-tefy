@@ -5,13 +5,22 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { RESTAURANT_SEARCH_QUERY } from '../../graphql/queries';
 
 class SearchPage extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      address: 'Chicago' // initiate address to chicago
+    };
+  }
+
   render() {
+    const { address } = this.state;
+
     return (
       // Variables can be either lat and lon OR address
       <Query
         query={RESTAURANT_SEARCH_QUERY}
         variables={{
-          address: 'Manhattan'
+          address
         }}
       >
         {({ loading, error, data = {} }) => {
