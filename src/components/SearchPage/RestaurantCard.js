@@ -22,6 +22,7 @@ const styles = {
     flexDirection: 'row',
     alignItems: 'flexStart',
     borderRadius: 15,
+    paddingLeft: 15
   },
   placeIcon: {
     color: lightBlue
@@ -43,7 +44,10 @@ const styles = {
   info: {
     flex: 1,
     padding: 10,
-    paddingRight: 0
+    paddingRight: 0,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'flex-start'
   },
   description: {
     color: darkBlue
@@ -52,8 +56,8 @@ const styles = {
     color: lightBlue
   },
   featuredImage: {
-    width: 150,
-    height: 150,
+    maxWidth: 180,
+    height: 180,
     borderTopRightRadius: 15,
     borderBottomRightRadius: 15
   },
@@ -67,7 +71,9 @@ const styles = {
   cuisine: {
     composes: '$flexRowCenter',
     fontSize: '1.2rem',
-    color: lightBlue
+    color: lightBlue,
+    marginTop: 15,
+    flexGrow: 1
   },
   featured: {
     composes: '$flexRowCenter',
@@ -122,9 +128,7 @@ class RestaurantCard extends PureComponent {
           <div className={classes.info}>
             <Typography component="address" variant="h6" classes={{root: classes.place}}>
               <Icon classes={{root: classes.placeIcon}}>place</Icon>
-              <Link to={'/rest/' + id} className={classes.titleLink}>
-                {title}
-              </Link>
+              <span className={classes.titleLink}>{title}</span>
             </Typography>
             <Typography component="div" variant="subtitle1" classes={{root: classes.cuisine}}>
               <Icon>restaurant</Icon><span>{` ${cuisine}` || ' Restaurant'}</span>
@@ -151,7 +155,7 @@ class RestaurantCard extends PureComponent {
         </Paper>
         <div className={classes.footer}>
           <div className={classes.distance}>
-            {openClosed} &middot;
+            {openClosed || 'Closed'} &middot;
             <span> {Math.floor(distance * 10) / 10} miles away</span>
           </div>
           <div className={classes.ratingAndDuration}>
