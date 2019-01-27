@@ -128,7 +128,9 @@ class RestaurantCard extends PureComponent {
           <div className={classes.info}>
             <Typography component="address" variant="h6" classes={{root: classes.place}}>
               <Icon classes={{root: classes.placeIcon}}>place</Icon>
-              <span className={classes.titleLink}>{title}</span>
+              <Link to={'/rest/' + id} className={classes.titleLink}>
+                {title}
+              </Link>
             </Typography>
             <Typography component="div" variant="subtitle1" classes={{root: classes.cuisine}}>
               <Icon>restaurant</Icon><span>{` ${cuisine}` || ' Restaurant'}</span>
