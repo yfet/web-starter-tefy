@@ -37,7 +37,8 @@ const styles = {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    fontStyle: 'normal'
+    fontStyle: 'normal',
+    fontSize: '1.4rem'
   },
   info: {
     flex: 1,
@@ -63,9 +64,15 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
   },
+  cuisine: {
+    composes: '$flexRowCenter',
+    fontSize: '1.2rem',
+    color: lightBlue
+  },
   featured: {
     composes: '$flexRowCenter',
-    color: darkBlue
+    color: darkBlue,
+    fontSize: '1.2rem'
   },
   footer: {
     display: 'flex',
@@ -75,6 +82,21 @@ const styles = {
   rating: {
     display: 'inline-block',
     marginLeft: 10
+  },
+  distance: {
+    flex: 1,
+    color: lightBlue,
+    fontSize: '1.2rem'
+  },
+  numberInfo: {
+    fontSize: '1.2rem',
+    fontWeight: 500
+  },
+  ratingAndDuration: {
+    color: darkBlue
+  },
+  lightBlue: {
+    color: lightBlue
   }
 };
 
@@ -104,7 +126,7 @@ class RestaurantCard extends PureComponent {
                 {title}
               </Link>
             </Typography>
-            <Typography component="div" variant="subtitle1" classes={{root: classes.flexRowCenter}}>
+            <Typography component="div" variant="subtitle1" classes={{root: classes.cuisine}}>
               <Icon>restaurant</Icon><span>{` ${cuisine}` || ' Restaurant'}</span>
             </Typography>
             <Typography component="div" variant="subtitle1" classes={{root: classes.featured}}>
@@ -128,13 +150,19 @@ class RestaurantCard extends PureComponent {
           }
         </Paper>
         <div className={classes.footer}>
-          <div className={classes.flex1}>
+          <div className={classes.distance}>
             {openClosed} &middot;
             <span> {Math.floor(distance * 10) / 10} miles away</span>
           </div>
-          <div>
-            <span><Icon>directions_walk</Icon>{walkDurationInMinutes(distance)} min</span>
-            <span className={classes.rating}><Icon>star_rate</Icon>{rating ? `${rating}/5` : '0/5'}</span>
+          <div className={classes.ratingAndDuration}>
+            <span>
+              <Icon className={classes.lightBlue}>directions_walk</Icon>
+              <span className={classes.numberInfo}>{walkDurationInMinutes(distance)} </span>min
+            </span>
+            <span className={classes.rating}>
+              <Icon className={classes.lightBlue}>star_rate</Icon>
+              <span className={classes.numberInfo}>{rating || 0}</span>/5
+            </span>
           </div>
         </div>
       </div>
