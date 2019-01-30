@@ -1,15 +1,16 @@
-import React, { Component } from 'react';
-import { withStyles } from '@material-ui/core/styles';
-import { Query } from 'react-apollo';
+import React, {Component} from 'react';
+import {withStyles} from '@material-ui/core/styles';
+import {Query} from 'react-apollo';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
 import Icon from '@material-ui/core/Icon';
 import Button from '@material-ui/core/Button';
-import { RESTAURANT_SEARCH_QUERY } from '../../graphql/queries';
+import {RESTAURANT_SEARCH_QUERY} from '../../graphql/queries';
 import RestaurantCard from './RestaurantCard';
 import RestaurantMap from './RestaurantMap';
 import {darkBlue, lightBlue} from '../../utils/constants';
 import SearchMapInput from '../UI/SearchMapInput';
+import {desktop, DesktopOrAbove, Mobile, mobile} from '../../utils/styles';
 
 const styles = {
   container: {
@@ -26,7 +27,10 @@ const styles = {
   restaurant: {
     height: '100%',
     overflowY: 'auto',
-    marginTop: 20
+    marginTop: 20,
+    [mobile]: {
+      flex: 1
+    }
   },
   map: {
     flex: 1,
@@ -79,7 +83,12 @@ const styles = {
     display: 'flex',
     zIndex: 20,
     alignItems: 'center',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    [desktop]: {
+      flexDirection: 'column',
+      height: 100,
+      justifyContent: 'space-around'
+    }
   },
   logIn: {
     backgroundColor: 'rgba(255,255,255, 0.2)',
@@ -95,6 +104,27 @@ const styles = {
     textTransform: 'none',
     borderRadius: 30,
     width: 120
+  },
+  searchControls: {
+    display: 'flex',
+    justifyContent: 'center',
+    [desktop]: {
+      width: '100%',
+      justifyContent: 'space-between'
+    },
+    [mobile]: {
+      marginTop: 20,
+      marginLeft: 20,
+      marginRight: 20,
+      justifyContent: 'space-between'
+    }
+  },
+  loginButtons: {
+    [desktop]: {
+      display: 'flex',
+      width: '100%',
+      justifyContent: 'space-between'
+    }
   },
   myLocation: {
     marginRight: 10,
@@ -112,7 +142,8 @@ class SearchPage extends Component {
     this.state = {
       address: 'Chicago', // initiate address to chicago,
       searchText: 'Chicago',
-      showMap: false
+      showMap: false,
+      currentLocation: null
     };
   }
 
@@ -131,11 +162,12 @@ class SearchPage extends Component {
   };
 
   onLocationKeyPress = (event) => {
-    const { searchText } = this.state;
+    const {searchText} = this.state;
     if (event.key === 'Enter') {
       this.setState({
         address: searchText,
-        showMap: false
+        showMap: false,
+        currentLocation: null
       });
 
       setTimeout(() => {
@@ -150,11 +182,17 @@ class SearchPage extends Component {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(async (position) => {
         const {coords: {latitude, longitude}} = position;
+        this.setState({
+          currentLocation: {
+            lat: latitude,
+            lng: longitude
+          }
+        });
         const url = 'http://api.geonames.org/findNearbyPlaceNameJSON?lat=' + latitude + '&lng=' + longitude + '&username=yfet';
         const response = await fetch(url);
         const data = await response.json();
         if (data) {
-          const { geonames } = data;
+          const {geonames} = data;
           if (geonames && geonames.length) {
             const address = geonames[0].toponymName;
             if (address) {
@@ -177,7 +215,7 @@ class SearchPage extends Component {
   };
 
   render() {
-    const { address, searchText, showMap } = this.state;
+    const {address, searchText, showMap, currentLocation} = this.state;
 
     return (
       // Variables can be either lat and lon OR address
@@ -187,18 +225,17 @@ class SearchPage extends Component {
           address
         }}
       >
-        {({ loading, error, data = {} }) => {
+        {({loading, error, data = {}}) => {
           if (loading) {
             return <CircularProgress />;
           }
-
           // Make sure we have data
           if (
             data.search_restaurants
             && data.search_restaurants.results
             && data.search_restaurants.results.length > 0
           ) {
-            const { classes } = this.props;
+            const {classes} = this.props;
             return (
               <div className={classes.container}>
                 <div className={classes.restaurant}>
@@ -215,6 +252,22 @@ class SearchPage extends Component {
                       <Icon>filter_list</Icon>
                     </Button>
                   </div>
+                  <Mobile>
+                    <div className={classes.searchControls}>
+                      <Button
+                        className={classes.myLocation}
+                        onClick={this.onUseMyLocationClick}
+                      >
+                        <Icon>place</Icon>
+                        Use my location
+                      </Button>
+                      <SearchMapInput
+                        onKeyPress={this.onLocationKeyPress}
+                        onChange={this.onLocationChange}
+                        value={searchText}
+                      />
+                    </div>
+                  </Mobile>
                   {data.search_restaurants.results.map((r, index) => {
                     const {
                       id, images = [], references = [], title = '',
@@ -240,47 +293,50 @@ class SearchPage extends Component {
                     );
                   })}
                 </div>
-                <div className={classes.map}>
-                  <div className={classes.actionBar}>
-                    <div className={classes.flexRow}>
-                      <Button
-                        className={classes.myLocation}
-                        onClick={this.onUseMyLocationClick}
-                      >
-                        <Icon>place</Icon>
-                        Use my location
-                      </Button>
-                      <SearchMapInput
-                        onKeyPress={this.onLocationKeyPress}
-                        onChange={this.onLocationChange}
-                        value={searchText}
+                <DesktopOrAbove>
+                  <div className={classes.map}>
+                    <div className={classes.actionBar}>
+                      <div className={classes.searchControls}>
+                        <Button
+                          className={classes.myLocation}
+                          onClick={this.onUseMyLocationClick}
+                        >
+                          <Icon>place</Icon>
+                          Use my location
+                        </Button>
+                        <SearchMapInput
+                          onKeyPress={this.onLocationKeyPress}
+                          onChange={this.onLocationChange}
+                          value={searchText}
+                        />
+                      </div>
+                      <div className={classes.loginButtons}>
+                        <Button
+                          className={classes.logIn}
+                        >
+                          Log In
+                        </Button>
+                        <Button className={classes.signUp}>
+                          Sign Up
+                        </Button>
+                      </div>
+                    </div>
+                    {showMap
+                    && (
+                      <RestaurantMap
+                        data={data.search_restaurants.results}
+                        location={address}
+                        currentLocation={currentLocation}
+                        isMarkerShown
+                        googleMapURL="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places"
+                        loadingElement={<div style={{height: '100%'}} />}
+                        containerElement={<div style={{height: '100%'}} />}
+                        mapElement={<div style={{height: '100%'}} />}
                       />
-                    </div>
-                    <div>
-                      <Button
-                        className={classes.logIn}
-                      >
-                        Log In
-                      </Button>
-                      <Button className={classes.signUp}>
-                        Sign Up
-                      </Button>
-                    </div>
+                    )
+                    }
                   </div>
-                  {showMap
-                  && (
-                    <RestaurantMap
-                      data={data.search_restaurants.results}
-                      location={address}
-                      isMarkerShown
-                      googleMapURL="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places"
-                      loadingElement={<div style={{height: '100%'}} />}
-                      containerElement={<div style={{height: '100%'}} />}
-                      mapElement={<div style={{height: '100%'}} />}
-                    />
-                  )
-                  }
-                </div>
+                </DesktopOrAbove>
               </div>
             );
           }
