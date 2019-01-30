@@ -5,14 +5,13 @@ import Typography from '@material-ui/core/Typography';
 import Icon from '@material-ui/core/Icon';
 import {Link} from 'react-router-dom';
 import Paper from '@material-ui/core/es/Paper/Paper';
-import {walkDurationInMinutes} from "../../utils/utils";
-
-const lightBlue = '#4981c2';
-const darkBlue = '#1d1583';
+import {walkDurationInMinutes} from '../../utils/utils';
+import {darkBlue, lightBlue} from '../../utils/constants';
 
 const styles = {
   container: {
     margin: 20,
+    marginRight: 40,
     marginBottom: 30,
     maxWidth: 600
   },
@@ -133,12 +132,12 @@ class RestaurantCard extends PureComponent {
               </Link>
             </Typography>
             <Typography component="div" variant="subtitle1" classes={{root: classes.cuisine}}>
-              <Icon>restaurant</Icon><span>{` ${cuisine}` || ' Restaurant'}</span>
+              <Icon>restaurant</Icon><span>{(cuisine && ` ${cuisine}`) || ' Restaurant'}</span>
             </Typography>
             <Typography component="div" variant="subtitle1" classes={{root: classes.featured}}>
               <Icon>star</Icon>
               <span>
-                {(reference && (` Featured in ${reference}`)) || ''}
+                {(reference && (` Featured in ${reference}`)) || 'Not featured yet'}
                 {referencesCount > 2 && ('... +' + (referencesCount - 1))}
               </span>
             </Typography>
