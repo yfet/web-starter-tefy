@@ -7,13 +7,13 @@ import {Link} from 'react-router-dom';
 import Paper from '@material-ui/core/es/Paper/Paper';
 import {walkDurationInMinutes} from '../../utils/utils';
 import {darkBlue, lightBlue} from '../../utils/constants';
+import {mobile} from "../../utils/styles";
 
 const styles = {
   container: {
     margin: 20,
     marginRight: 40,
     marginBottom: 30,
-    maxWidth: 600
   },
   card: {
     width: '100%',
