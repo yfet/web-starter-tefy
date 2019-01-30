@@ -13,3 +13,7 @@ This is the world's best food App.
 - Ensure your code lints cleanly with `npm run lint`
 - Use material design for components where possible
 - Update the README.md with any additional dependancies or setup instructions
+
+## Additional dependancies:
+- react-google-maps: for map view
+- react-responsive: for responsive and breakpoint utilities
