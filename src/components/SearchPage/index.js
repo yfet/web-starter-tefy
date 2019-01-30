@@ -19,6 +19,10 @@ const styles = {
     display: 'flex',
     padding: 5
   },
+  flexRow: {
+    display: 'flex',
+    justifyContent: 'center'
+  },
   restaurant: {
     height: '100%',
     overflowY: 'auto',
@@ -71,7 +75,7 @@ const styles = {
     color: 'white',
     marginLeft: 20,
     marginRight: 20,
-    height: 50,
+    height: 70,
     display: 'flex',
     zIndex: 20,
     alignItems: 'center',
@@ -91,6 +95,14 @@ const styles = {
     textTransform: 'none',
     borderRadius: 30,
     width: 120
+  },
+  myLocation: {
+    marginRight: 10,
+    backgroundColor: 'orange',
+    color: 'white',
+    textTransform: 'none',
+    borderRadius: 30,
+    width: 160
   }
 };
 
@@ -131,6 +143,36 @@ class SearchPage extends Component {
           showMap: true
         });
       }, 1000);
+    }
+  };
+
+  onUseMyLocationClick = async () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(async (position) => {
+        const {coords: {latitude, longitude}} = position;
+        const url = 'http://api.geonames.org/findNearbyPlaceNameJSON?lat=' + latitude + '&lng=' + longitude + '&username=yfet';
+        const response = await fetch(url);
+        const data = await response.json();
+        if (data) {
+          const { geonames } = data;
+          if (geonames && geonames.length) {
+            const address = geonames[0].toponymName;
+            if (address) {
+              this.setState({
+                showMap: false,
+                address,
+                searchText: address
+              });
+
+              setTimeout(() => {
+                this.setState({
+                  showMap: true
+                });
+              }, 1000);
+            }
+          }
+        }
+      });
     }
   };
 
@@ -200,7 +242,14 @@ class SearchPage extends Component {
                 </div>
                 <div className={classes.map}>
                   <div className={classes.actionBar}>
-                    <div>
+                    <div className={classes.flexRow}>
+                      <Button
+                        className={classes.myLocation}
+                        onClick={this.onUseMyLocationClick}
+                      >
+                        <Icon>place</Icon>
+                        Use my location
+                      </Button>
                       <SearchMapInput
                         onKeyPress={this.onLocationKeyPress}
                         onChange={this.onLocationChange}
@@ -210,7 +259,6 @@ class SearchPage extends Component {
                     <div>
                       <Button
                         className={classes.logIn}
-                        classes={{label: classes.logInLabel}}
                       >
                         Log In
                       </Button>
