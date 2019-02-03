@@ -1,13 +1,12 @@
-import React, {PureComponent} from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import {withStyles} from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Icon from '@material-ui/core/Icon';
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Paper from '@material-ui/core/es/Paper/Paper';
-import {walkDurationInMinutes} from '../../utils/utils';
-import {darkBlue, lightBlue} from '../../utils/constants';
-import {mobile} from "../../utils/styles";
+import { walkDurationInMinutes } from '../../utils/utils';
+import { darkBlue, lightBlue } from '../../utils/constants';
 
 const styles = {
   container: {
@@ -125,16 +124,16 @@ class RestaurantCard extends PureComponent {
       <div className={classes.container}>
         <Paper className={classes.card} elevation={1}>
           <div className={classes.info}>
-            <Typography component="address" variant="h6" classes={{root: classes.place}}>
-              <Icon classes={{root: classes.placeIcon}}>place</Icon>
+            <Typography component="address" variant="h6" classes={{ root: classes.place }}>
+              <Icon classes={{ root: classes.placeIcon }}>place</Icon>
               <Link to={'/rest/' + id} className={classes.titleLink}>
                 {title}
               </Link>
             </Typography>
-            <Typography component="div" variant="subtitle1" classes={{root: classes.cuisine}}>
+            <Typography component="div" variant="subtitle1" classes={{ root: classes.cuisine }}>
               <Icon>restaurant</Icon><span>{(cuisine && ` ${cuisine}`) || ' Restaurant'}</span>
             </Typography>
-            <Typography component="div" variant="subtitle1" classes={{root: classes.featured}}>
+            <Typography component="div" variant="subtitle1" classes={{ root: classes.featured }}>
               <Icon>star</Icon>
               <span>
                 {(reference && (` Featured in ${reference}`)) || 'Not featured yet'}
@@ -143,15 +142,15 @@ class RestaurantCard extends PureComponent {
             </Typography>
           </div>
           {featuredImage
-          && (
-            <img
-              className={classes.featuredImage}
-              src={featuredImage}
-              alt="Featuread"
-              ref={this.featuredRef}
-              onError={this.onFeaturedImageError}
-            />
-          )
+            && (
+              <img
+                className={classes.featuredImage}
+                src={featuredImage}
+                alt="Featuread"
+                ref={this.featuredRef}
+                onError={this.onFeaturedImageError}
+              />
+            )
           }
         </Paper>
         <div className={classes.footer}>
